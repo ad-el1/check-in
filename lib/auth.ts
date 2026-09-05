@@ -12,11 +12,15 @@ export async function getSessionRole(): Promise<{
   user: User | null;
   role: Role | null;
 }> {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return { user, role: roleOf(user) };
+  try {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return { user, role: roleOf(user) };
+  } catch {
+    return { user: null, role: null };
+  }
 }
 
 /** Garde pour route handler : exige un des rôles. Renvoie le rôle ou null. */

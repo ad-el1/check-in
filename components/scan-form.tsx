@@ -137,7 +137,7 @@ function ResultScreen({
       text: "Vérifiez votre CNE ou contactez l'organisateur.",
     },
     already: {
-      bg: "bg-accent",
+      bg: "bg-[#E65100]",
       icon: <AlertTriangle className="h-16 w-16" />,
       title: "Déjà enregistré",
       text: "Vous êtes déjà enregistré aujourd'hui.",
