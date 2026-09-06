@@ -1,13 +1,13 @@
-# Création des 3 comptes Supabase Auth
+# Création des comptes Supabase Auth
 
 Dans **Supabase Dashboard → Authentication → Users → Add user** (cocher
 « Auto Confirm User »), créer :
 
-| Email                 | Rôle           |
-|-----------------------|----------------|
-| `admin@fssm.ma`       | `admin`        |
-| `checkin@fssm.ma`     | `checkin`      |
-| `restauration@fssm.ma`| `restauration` |
+| Email                 | Rôle           | Obligatoire ? |
+|-----------------------|----------------|---------------|
+| `admin@fssm.ma`       | `admin`        | oui — accès total (dashboard, présences, écran QR, repas, membres) |
+| `restauration@fssm.ma`| `restauration` | oui — accès aux listes repas uniquement |
+| `checkin@fssm.ma`     | `checkin`      | **optionnel** — seulement si une personne dédiée tient l'écran QR / la vue présences. Sinon l'admin fait tout. |
 
 Puis pour **chaque** utilisateur, définir la métadonnée de rôle.
 

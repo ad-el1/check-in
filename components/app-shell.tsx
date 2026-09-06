@@ -28,28 +28,36 @@ interface NavItem {
 
 export type AppSection = "admin" | "checkin" | "restauration";
 
+const QR: NavItem = { href: "/checkin/qr-screen", label: "Écran QR", icon: QrCode };
+const PRESENCES: NavItem = {
+  href: "/checkin/presences",
+  label: "Présences",
+  icon: Users,
+};
+const PETIT_DEJ: NavItem = {
+  href: "/restauration/petit-dejeuner",
+  label: "Petit-déjeuner",
+  icon: Coffee,
+};
+const DEJEUNER: NavItem = {
+  href: "/restauration/dejeuner",
+  label: "Déjeuner",
+  icon: UtensilsCrossed,
+};
+
 const NAV_BY_SECTION: Record<AppSection, NavItem[]> = {
+  // L'admin voit tout, partout.
   admin: [
     { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    PRESENCES,
+    QR,
+    PETIT_DEJ,
+    DEJEUNER,
     { href: "/admin/membres", label: "Membres", icon: Users },
     { href: "/admin/comptes", label: "Comptes", icon: KeyRound },
   ],
-  checkin: [
-    { href: "/checkin/qr-screen", label: "Écran QR", icon: QrCode },
-    { href: "/checkin/presences", label: "Présences", icon: Users },
-  ],
-  restauration: [
-    {
-      href: "/restauration/petit-dejeuner",
-      label: "Petit-déjeuner",
-      icon: Coffee,
-    },
-    {
-      href: "/restauration/dejeuner",
-      label: "Déjeuner",
-      icon: UtensilsCrossed,
-    },
-  ],
+  checkin: [QR, PRESENCES],
+  restauration: [PETIT_DEJ, DEJEUNER],
 };
 
 export function AppShell({
@@ -64,7 +72,8 @@ export function AppShell({
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const nav = NAV_BY_SECTION[section];
+  // L'admin garde son menu complet même sur les pages check-in / restauration.
+  const nav = NAV_BY_SECTION[role === "admin" ? "admin" : section];
 
   async function signOut() {
     const supabase = createClient();
