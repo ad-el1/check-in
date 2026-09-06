@@ -1,13 +1,22 @@
 import type { Role } from "./types";
 
+const num = (v: string | undefined, def: number) => {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : def;
+};
+
 /** Rotation VISUELLE du QR à l'écran (secondes). */
-export const QR_ROTATION_SECONDS = Number(process.env.QR_ROTATION_SECONDS ?? 5);
+export const QR_ROTATION_SECONDS = num(process.env.QR_ROTATION_SECONDS, 5);
 /**
  * Durée pendant laquelle un token reste acceptable après sa création :
  * TTL + grâce. Doit couvrir : scan + ouverture page + saisie du CNE.
+ * Planchers de sécurité pour qu'une mauvaise config d'env ne casse rien.
  */
-export const QR_TTL_SECONDS = Number(process.env.QR_TTL_SECONDS ?? 120);
-export const QR_GRACE_SECONDS = Number(process.env.QR_GRACE_SECONDS ?? 30);
+export const QR_TTL_SECONDS = Math.max(90, num(process.env.QR_TTL_SECONDS, 120));
+export const QR_GRACE_SECONDS = Math.max(
+  20,
+  num(process.env.QR_GRACE_SECONDS, 30),
+);
 
 /**
  * Clé secrète de l'écran QR public.

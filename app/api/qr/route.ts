@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireRole } from "@/lib/auth";
-import { QR_TTL_SECONDS, SCREEN_KEY } from "@/lib/config";
+import { QR_TTL_SECONDS, QR_GRACE_SECONDS, SCREEN_KEY } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -38,10 +38,12 @@ export async function GET(request: Request) {
     const token = randomUUID();
     const expiresAt = new Date(now + QR_TTL_SECONDS * 1000).toISOString();
 
-    await supabase
-      .from("qr_tokens")
-      .delete()
-      .lt("expires_at", new Date(now - 60_000).toISOString());
+    // Ne purge qu'après la fin de la fenêtre de grâce + marge, jamais un token
+    // encore valide.
+    const purgeBefore = new Date(
+      now - (QR_GRACE_SECONDS + 120) * 1000,
+    ).toISOString();
+    await supabase.from("qr_tokens").delete().lt("expires_at", purgeBefore);
 
     const { error } = await supabase
       .from("qr_tokens")
