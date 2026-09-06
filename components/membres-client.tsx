@@ -35,6 +35,7 @@ import {
   UserPlus,
   Ban,
   RotateCcw,
+  Trash2,
 } from "lucide-react";
 
 const PAGE_SIZE = 20;
@@ -45,6 +46,8 @@ export function MembresClient() {
   const [page, setPage] = useState(0);
   const [addOpen, setAddOpen] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [toDelete, setToDelete] = useState<Member | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -79,6 +82,24 @@ export function MembresClient() {
       toast.error("Erreur");
     } finally {
       setBusyId(null);
+    }
+  }
+
+  async function confirmDelete() {
+    if (!toDelete) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/members/${toDelete.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error();
+      toast.success(`${toDelete.prenom} ${toDelete.nom} supprimé`);
+      setToDelete(null);
+      load();
+    } catch {
+      toast.error("Suppression impossible");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -240,6 +261,7 @@ export function MembresClient() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      title={m.active ? "Désactiver" : "Réactiver"}
                       disabled={busyId === m.id}
                       onClick={() => toggleActive(m)}
                     >
@@ -248,6 +270,16 @@ export function MembresClient() {
                       ) : (
                         <RotateCcw className="h-4 w-4" />
                       )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Supprimer"
+                      className="text-destructive hover:text-destructive"
+                      disabled={busyId === m.id}
+                      onClick={() => setToDelete(m)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </TableCell>
@@ -281,6 +313,39 @@ export function MembresClient() {
           </Button>
         </div>
       </div>
+
+      <Dialog
+        open={!!toDelete}
+        onOpenChange={(o) => !o && !deleting && setToDelete(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Supprimer ce membre ?</DialogTitle>
+            <DialogDescription>
+              {toDelete
+                ? `${toDelete.prenom} ${toDelete.nom} (${toDelete.cne}) sera supprimé définitivement, ainsi que ses présences et repas enregistrés. Pour un retrait réversible, utilise plutôt « Désactiver ».`
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setToDelete(null)}
+              disabled={deleting}
+            >
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleting}
+            >
+              {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+              Supprimer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

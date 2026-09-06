@@ -49,3 +49,28 @@ export async function PATCH(
   }
   return NextResponse.json({ success: true, member: data });
 }
+
+/**
+ * DELETE /api/members/:id — supprime définitivement un membre (admin).
+ * Les présences et repas liés sont supprimés en cascade.
+ */
+export async function DELETE(
+  _request: Request,
+  { params }: { params: { id: string } },
+) {
+  const role = await requireRole(["admin"]);
+  if (!role)
+    return NextResponse.json({ error: "Non autorisé." }, { status: 403 });
+
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("members")
+    .delete()
+    .eq("id", params.id);
+
+  if (error) {
+    console.error("member delete error", error);
+    return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
+  }
+  return NextResponse.json({ success: true });
+}
