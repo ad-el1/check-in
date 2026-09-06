@@ -7,17 +7,36 @@ import { getEventDay } from "@/lib/date";
 import { QR_ROTATION_SECONDS } from "@/lib/config";
 import { Loader2, WifiOff } from "lucide-react";
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ??
-  (typeof window !== "undefined" ? window.location.origin : "");
+/**
+ * Origine encodée dans le QR. On privilégie l'origine réelle du navigateur
+ * (l'écran kiosque est servi depuis le domaine déployé) ; NEXT_PUBLIC_APP_URL
+ * ne sert que de repli et on n'en garde que le schéma + l'hôte.
+ */
+function resolveOrigin(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  const raw = process.env.NEXT_PUBLIC_APP_URL;
+  if (!raw) return "";
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return raw.replace(/\/+$/, "");
+  }
+}
 
 export function QrDisplay() {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [progress, setProgress] = useState(100);
   const [count, setCount] = useState<number | null>(null);
+  const [origin, setOrigin] = useState("");
   const day = getEventDay();
   const tickRef = useRef<number>(0);
+
+  useEffect(() => {
+    setOrigin(resolveOrigin());
+  }, []);
 
   const fetchToken = useCallback(async () => {
     try {
@@ -106,7 +125,7 @@ export function QrDisplay() {
     };
   }, []);
 
-  const url = token ? `${APP_URL}/scan?token=${token}` : "";
+  const url = token && origin ? `${origin}/scan?token=${token}` : "";
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-primary p-6 text-primary-foreground">

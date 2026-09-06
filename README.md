@@ -13,7 +13,7 @@ Gère, sur 7 jours (J1→J7) :
 ## Stack
 
 Next.js 14 (App Router, TS) · shadcn/ui + Tailwind · Supabase (Postgres +
-Realtime + Auth) · Recharts · qrcode.react · PWA · déploiement Vercel.
+Realtime + Auth) · Recharts · qrcode.react · PWA · déploiement Railway.
 
 ## Mise en route
 
@@ -83,13 +83,13 @@ manuellement entre les jours.
 Les écritures publiques (scan, QR) passent par les routes API avec la clé
 `service_role` : la RLS ne définit que l'accès des 3 comptes authentifiés.
 
-## Déploiement Vercel
+## Déploiement (Railway)
 
-1. Pousser la branche sur GitHub.
-2. Importer le repo sur Vercel, framework **Next.js** détecté.
-3. Ajouter les mêmes variables d'environnement (avec
-   `NEXT_PUBLIC_APP_URL` = URL de production).
-4. Déployer. Le QR de `/checkin/qr-screen` encode `NEXT_PUBLIC_APP_URL/scan?token=…`.
+Voir **[DEPLOY_RAILWAY.md](DEPLOY_RAILWAY.md)** pour la procédure pas à pas.
+Le repo contient `railway.json` + `nixpacks.toml` + `.nvmrc` + un healthcheck
+`/api/health`. En résumé : New Project → Deploy from GitHub → ajouter les
+variables d'env → Generate Domain → renseigner `NEXT_PUBLIC_APP_URL` (racine du
+domaine) → Redeploy.
 
 ## Notes
 
