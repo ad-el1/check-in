@@ -7,26 +7,64 @@ import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { FssmLogo } from "@/components/fssm-logo";
 import { Button } from "@/components/ui/button";
-import { LogOut, Menu, X, type LucideIcon } from "lucide-react";
+import {
+  Coffee,
+  KeyRound,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  QrCode,
+  Users,
+  UtensilsCrossed,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 
-export interface NavItem {
+interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
 }
 
+export type AppSection = "admin" | "checkin" | "restauration";
+
+const NAV_BY_SECTION: Record<AppSection, NavItem[]> = {
+  admin: [
+    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/membres", label: "Membres", icon: Users },
+    { href: "/admin/comptes", label: "Comptes", icon: KeyRound },
+  ],
+  checkin: [
+    { href: "/checkin/qr-screen", label: "Écran QR", icon: QrCode },
+    { href: "/checkin/presences", label: "Présences", icon: Users },
+  ],
+  restauration: [
+    {
+      href: "/restauration/petit-dejeuner",
+      label: "Petit-déjeuner",
+      icon: Coffee,
+    },
+    {
+      href: "/restauration/dejeuner",
+      label: "Déjeuner",
+      icon: UtensilsCrossed,
+    },
+  ],
+};
+
 export function AppShell({
-  nav,
+  section,
   role,
   children,
 }: {
-  nav: NavItem[];
+  section: AppSection;
   role: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const nav = NAV_BY_SECTION[section];
 
   async function signOut() {
     const supabase = createClient();

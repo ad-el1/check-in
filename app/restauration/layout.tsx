@@ -1,12 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSessionRole } from "@/lib/auth";
-import { AppShell, type NavItem } from "@/components/app-shell";
-import { Coffee, UtensilsCrossed } from "lucide-react";
-
-const NAV: NavItem[] = [
-  { href: "/restauration/petit-dejeuner", label: "Petit-déjeuner", icon: Coffee },
-  { href: "/restauration/dejeuner", label: "Déjeuner", icon: UtensilsCrossed },
-];
+import { AppShell } from "@/components/app-shell";
 
 export default async function RestaurationLayout({
   children,
@@ -15,5 +9,9 @@ export default async function RestaurationLayout({
 }) {
   const { role } = await getSessionRole();
   if (role !== "admin" && role !== "restauration") redirect("/login");
-  return <AppShell nav={NAV} role={role}>{children}</AppShell>;
+  return (
+    <AppShell section="restauration" role={role}>
+      {children}
+    </AppShell>
+  );
 }
