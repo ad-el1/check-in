@@ -66,7 +66,6 @@ interface Stats {
     cne: string;
     nom: string;
     prenom: string;
-    filiere: string | null;
   }[];
 }
 
@@ -284,7 +283,6 @@ export function DashboardClient() {
                   <TableHead>CNE</TableHead>
                   <TableHead>Nom</TableHead>
                   <TableHead>Prénom</TableHead>
-                  <TableHead>Filière</TableHead>
                   <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -292,7 +290,7 @@ export function DashboardClient() {
                 {!stats &&
                   Array.from({ length: 4 }).map((_, i) => (
                     <TableRow key={i}>
-                      {Array.from({ length: 5 }).map((__, j) => (
+                      {Array.from({ length: 4 }).map((__, j) => (
                         <TableCell key={j}>
                           <Skeleton className="h-4 w-20" />
                         </TableCell>
@@ -302,7 +300,7 @@ export function DashboardClient() {
                 {stats && absents.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={5}
+                      colSpan={4}
                       className="py-6 text-center text-muted-foreground"
                     >
                       Aucun absent 🎉
@@ -316,9 +314,6 @@ export function DashboardClient() {
                     </TableCell>
                     <TableCell className="font-medium">{a.nom}</TableCell>
                     <TableCell>{a.prenom}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {a.filiere ?? "—"}
-                    </TableCell>
                     <TableCell className="text-right">
                       <Button
                         size="sm"

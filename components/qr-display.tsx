@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { createClient } from "@/lib/supabase/client";
 import { getEventDay } from "@/lib/date";
 import { QR_ROTATION_SECONDS } from "@/lib/config";
 import { Loader2, WifiOff } from "lucide-react";
@@ -54,16 +53,14 @@ export function QrDisplay() {
 
   const fetchCount = useCallback(async () => {
     try {
-      const supabase = createClient();
-      const { count: c } = await supabase
-        .from("checkins")
-        .select("id", { count: "exact", head: true })
-        .eq("day", day);
-      if (typeof c === "number") setCount(c);
+      const res = await fetch("/api/presence-count", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = (await res.json()) as { count: number };
+      if (typeof data.count === "number") setCount(data.count);
     } catch {
       /* silencieux */
     }
-  }, [day]);
+  }, []);
 
   // Rotation du token
   useEffect(() => {
@@ -85,23 +82,11 @@ export function QrDisplay() {
     return () => clearInterval(id);
   }, []);
 
-  // Compteur de présences + realtime
+  // Compteur de présences (polling — l'écran peut être public, sans session)
   useEffect(() => {
     fetchCount();
-    const supabase = createClient();
-    const channel = supabase
-      .channel("qr-screen-count")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "checkins" },
-        () => fetchCount(),
-      )
-      .subscribe();
-    const poll = setInterval(fetchCount, 15000);
-    return () => {
-      supabase.removeChannel(channel);
-      clearInterval(poll);
-    };
+    const poll = setInterval(fetchCount, 5000);
+    return () => clearInterval(poll);
   }, [fetchCount]);
 
   // Wake Lock

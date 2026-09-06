@@ -10,7 +10,6 @@ interface MemberLite {
   cne: string;
   nom: string;
   prenom: string;
-  filiere: string | null;
 }
 
 /** GET /api/stats?day=N — agrégats pour le dashboard admin. */
@@ -25,7 +24,7 @@ export async function GET(request: Request) {
   const supabase = createAdminClient();
 
   const [membersRes, checkinsRes, mealsRes] = await Promise.all([
-    supabase.from("members").select("id, cne, nom, prenom, filiere").eq("active", true),
+    supabase.from("members").select("id, cne, nom, prenom").eq("active", true),
     supabase.from("checkins").select("member_id, day, checked_at"),
     supabase.from("meals").select("member_id, day, breakfast, lunch"),
   ]);

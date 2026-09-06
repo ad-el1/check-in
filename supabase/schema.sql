@@ -12,10 +12,12 @@ create table if not exists members (
   cne        text unique not null,
   nom        text not null,
   prenom     text not null,
-  filiere    text,
   active     boolean default true,
   created_at timestamptz default now()
 );
+
+-- Si une base existante a encore la colonne `filiere` (non utilisée) :
+alter table members drop column if exists filiere;
 
 create table if not exists checkins (
   id         uuid primary key default gen_random_uuid(),

@@ -26,7 +26,6 @@ interface RawRow {
     cne: string;
     nom: string;
     prenom: string;
-    filiere: string | null;
   } | null;
 }
 
@@ -41,7 +40,7 @@ export function PresenceTable({ day }: { day: number }) {
       supabase
         .from("checkins")
         .select(
-          "id, checked_at, method, member_id, members(cne, nom, prenom, filiere)",
+          "id, checked_at, method, member_id, members(cne, nom, prenom)",
         )
         .eq("day", day)
         .order("checked_at", { ascending: false }),
@@ -60,7 +59,6 @@ export function PresenceTable({ day }: { day: number }) {
         cne: r.members?.cne ?? "—",
         nom: r.members?.nom ?? "—",
         prenom: r.members?.prenom ?? "",
-        filiere: r.members?.filiere ?? null,
       }),
     );
     setRows(mapped);
@@ -112,9 +110,9 @@ export function PresenceTable({ day }: { day: number }) {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>CNE</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Prénom</TableHead>
-              <TableHead>Filière</TableHead>
               <TableHead>Heure</TableHead>
               <TableHead>Méthode</TableHead>
             </TableRow>
@@ -142,11 +140,9 @@ export function PresenceTable({ day }: { day: number }) {
             )}
             {filtered.map((r) => (
               <TableRow key={r.id}>
+                <TableCell className="font-mono text-xs">{r.cne}</TableCell>
                 <TableCell className="font-medium">{r.nom}</TableCell>
                 <TableCell>{r.prenom}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {r.filiere ?? "—"}
-                </TableCell>
                 <TableCell>{formatTime(r.checked_at)}</TableCell>
                 <TableCell>
                   <Badge

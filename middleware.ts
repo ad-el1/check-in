@@ -3,7 +3,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { ROUTE_GUARDS, HOME_BY_ROLE } from "@/lib/config";
 import type { Role } from "@/lib/types";
 
-const PUBLIC_PATHS = ["/login", "/scan", "/unauthorized"];
+const PUBLIC_PATHS = ["/login", "/scan", "/unauthorized", "/ecran"];
 
 export async function middleware(request: NextRequest) {
   try {

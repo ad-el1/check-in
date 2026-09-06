@@ -24,7 +24,6 @@ interface RawCheckin {
     cne: string;
     nom: string;
     prenom: string;
-    filiere: string | null;
   } | null;
 }
 
@@ -47,7 +46,7 @@ export function MealList({
     const [{ data: checkins }, { data: meals }] = await Promise.all([
       supabase
         .from("checkins")
-        .select("member_id, checked_at, members(cne, nom, prenom, filiere)")
+        .select("member_id, checked_at, members(cne, nom, prenom)")
         .eq("day", day),
       supabase
         .from("meals")
@@ -69,7 +68,6 @@ export function MealList({
         cne: c.members!.cne,
         nom: c.members!.nom,
         prenom: c.members!.prenom,
-        filiere: c.members!.filiere,
         checked_at: c.checked_at,
         breakfast: mealMap.get(c.member_id)?.breakfast ?? false,
         lunch: mealMap.get(c.member_id)?.lunch ?? false,
@@ -191,7 +189,7 @@ export function MealList({
                   {r.nom} {r.prenom}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {r.cne} · {r.filiere ?? "—"}
+                  {r.cne}
                 </p>
               </div>
               {done ? (

@@ -18,7 +18,7 @@ export async function GET() {
     await Promise.all([
       supabase
         .from("members")
-        .select("id, cne, nom, prenom, filiere, active")
+        .select("id, cne, nom, prenom, active")
         .order("nom"),
       supabase.from("checkins").select("member_id, day, method"),
       supabase.from("meals").select("member_id, day, breakfast, lunch"),
@@ -28,7 +28,6 @@ export async function GET() {
     "CNE",
     "Nom",
     "Prenom",
-    "Filiere",
     "Actif",
     ...Array.from({ length: 7 }, (_, i) => `J${i + 1}_present`),
     "Total_jours",
@@ -49,7 +48,6 @@ export async function GET() {
         m.cne,
         m.nom,
         m.prenom,
-        m.filiere ?? "",
         m.active ? "1" : "0",
         ...days,
         mc.length,

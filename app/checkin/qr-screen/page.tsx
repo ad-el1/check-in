@@ -22,6 +22,9 @@ export default async function QrScreenPage() {
         <ArrowLeft className="h-4 w-4" />
         Retour
       </Link>
+      <p className="absolute right-3 top-3 z-10 rounded-md bg-white/15 px-3 py-1.5 text-xs text-white/90 backdrop-blur">
+        Écran d&apos;accueil public (sans connexion) : <b>/ecran</b>
+      </p>
       <QrDisplay />
     </div>
   );

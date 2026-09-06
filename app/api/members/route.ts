@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   const supabase = createAdminClient();
   let query = supabase
     .from("members")
-    .select("*")
+    .select("id, cne, nom, prenom, active, created_at")
     .order("nom", { ascending: true });
 
   if (q) {
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
 /**
  * POST /api/members
- * body: single { cne, nom, prenom, filiere? } OR { rows: [...] } pour import CSV.
+ * body: single { cne, nom, prenom } OR { rows: [...] } pour import CSV.
  */
 export async function POST(request: Request) {
   const role = await requireRole(["admin"]);
@@ -53,12 +53,7 @@ export async function POST(request: Request) {
   const supabase = createAdminClient();
 
   const rawRows = Array.isArray(body.rows) ? body.rows : [body];
-  const cleaned: {
-    cne: string;
-    nom: string;
-    prenom: string;
-    filiere: string | null;
-  }[] = [];
+  const cleaned: { cne: string; nom: string; prenom: string }[] = [];
   const errors: string[] = [];
 
   const rows = rawRows as Record<string, unknown>[];
@@ -67,12 +62,11 @@ export async function POST(request: Request) {
     const cne = normalizeCne(String(r.cne ?? ""));
     const nom = String(r.nom ?? "").trim();
     const prenom = String(r.prenom ?? "").trim();
-    const filiere = r.filiere ? String(r.filiere).trim() : null;
     if (!cne || !isValidCne(cne) || !nom || !prenom) {
       errors.push(`Ligne ${i + 1} ignorée (CNE/nom/prénom invalide).`);
       continue;
     }
-    cleaned.push({ cne, nom, prenom, filiere });
+    cleaned.push({ cne, nom, prenom });
   }
 
   if (cleaned.length === 0) {

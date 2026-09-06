@@ -124,13 +124,12 @@ export function MembresClient() {
               cne: normalizeCne(get("cne", "code", "cin")),
               nom: get("nom", "name", "lastname"),
               prenom: get("prenom", "prénom", "firstname"),
-              filiere: get("filiere", "filière", "filiere_", "branch"),
             };
           })
           .filter((r) => r.cne && r.nom && r.prenom);
 
         if (rows.length === 0) {
-          toast.error("Aucune ligne valide (colonnes attendues : cne, nom, prenom, filiere).");
+          toast.error("Aucune ligne valide (colonnes attendues : cne, nom, prenom).");
           return;
         }
         const res = await fetch("/api/members", {
@@ -188,7 +187,6 @@ export function MembresClient() {
               <TableHead>CNE</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Prénom</TableHead>
-              <TableHead>Filière</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -197,7 +195,7 @@ export function MembresClient() {
             {members === null &&
               Array.from({ length: 6 }).map((_, i) => (
                 <TableRow key={i}>
-                  {Array.from({ length: 6 }).map((__, j) => (
+                  {Array.from({ length: 5 }).map((__, j) => (
                     <TableCell key={j}>
                       <Skeleton className="h-4 w-20" />
                     </TableCell>
@@ -207,7 +205,7 @@ export function MembresClient() {
             {members !== null && pageRows.length === 0 && (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={5}
                   className="py-8 text-center text-muted-foreground"
                 >
                   Aucun membre.
@@ -219,9 +217,6 @@ export function MembresClient() {
                 <TableCell className="font-mono text-xs">{m.cne}</TableCell>
                 <TableCell className="font-medium">{m.nom}</TableCell>
                 <TableCell>{m.prenom}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {m.filiere ?? "—"}
-                </TableCell>
                 <TableCell>
                   <Badge variant={m.active ? "default" : "secondary"}>
                     {m.active ? "Actif" : "Inactif"}
@@ -299,12 +294,7 @@ function AddMemberDialog({
   onOpenChange: (o: boolean) => void;
   onAdded: () => void;
 }) {
-  const [form, setForm] = useState({
-    cne: "",
-    nom: "",
-    prenom: "",
-    filiere: "",
-  });
+  const [form, setForm] = useState({ cne: "", nom: "", prenom: "" });
   const [pending, setPending] = useState(false);
 
   async function submit(e: React.FormEvent) {
@@ -319,7 +309,7 @@ function AddMemberDialog({
       const d = await res.json();
       if (!res.ok) throw new Error(d.error ?? "Erreur");
       toast.success("Membre ajouté");
-      setForm({ cne: "", nom: "", prenom: "", filiere: "" });
+      setForm({ cne: "", nom: "", prenom: "" });
       onOpenChange(false);
       onAdded();
     } catch (e) {
@@ -345,14 +335,14 @@ function AddMemberDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-3">
-          {(["cne", "nom", "prenom", "filiere"] as const).map((k) => (
+          {(["cne", "nom", "prenom"] as const).map((k) => (
             <div key={k} className="space-y-1">
               <Label htmlFor={k} className="capitalize">
-                {k === "filiere" ? "Filière (optionnel)" : k}
+                {k}
               </Label>
               <Input
                 id={k}
-                required={k !== "filiere"}
+                required
                 value={form[k]}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, [k]: e.target.value }))

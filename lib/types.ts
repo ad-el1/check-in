@@ -5,7 +5,6 @@ export interface Member {
   cne: string;
   nom: string;
   prenom: string;
-  filiere: string | null;
   active: boolean;
   created_at: string;
 }
@@ -47,7 +46,6 @@ export interface CheckinRow {
   cne: string;
   nom: string;
   prenom: string;
-  filiere: string | null;
 }
 
 /** Membre présent + état repas du jour (pour la restauration). */
@@ -56,7 +54,6 @@ export interface PresentMealRow {
   cne: string;
   nom: string;
   prenom: string;
-  filiere: string | null;
   checked_at: string;
   breakfast: boolean;
   lunch: boolean;
@@ -64,7 +61,13 @@ export interface PresentMealRow {
 
 export interface CheckinApiError {
   error: string;
-  code: "TOKEN_EXPIRED" | "TOKEN_INVALID" | "CNE_UNKNOWN" | "ALREADY_CHECKED" | "BAD_REQUEST" | "SERVER_ERROR";
+  code:
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "CNE_UNKNOWN"
+    | "ALREADY_CHECKED"
+    | "BAD_REQUEST"
+    | "SERVER_ERROR";
 }
 
 export interface CheckinApiSuccess {

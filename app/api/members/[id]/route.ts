@@ -25,8 +25,6 @@ export async function PATCH(
   if (typeof body.active === "boolean") patch.active = body.active;
   if (typeof body.nom === "string") patch.nom = body.nom.trim();
   if (typeof body.prenom === "string") patch.prenom = body.prenom.trim();
-  if (typeof body.filiere === "string" || body.filiere === null)
-    patch.filiere = body.filiere ? String(body.filiere).trim() : null;
   if (typeof body.cne === "string") {
     const cne = normalizeCne(body.cne);
     if (!isValidCne(cne))
