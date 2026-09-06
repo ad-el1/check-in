@@ -5,41 +5,42 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 13%;
+    --foreground: 240 10% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card-foreground: 240 10% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover-foreground: 240 10% 4%;
 
-    /* FSSM vert foncé #1B5E20 */
-    --primary: 124 55% 24%;
-    --primary-foreground: 0 0% 100%;
+    /* Anthracite — boutons, en-têtes, nav active */
+    --primary: 240 6% 10%;
+    --primary-foreground: 0 0% 98%;
 
-    /* FSSM surface #F5F5F5 */
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 46%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 44%;
 
-    /* FSSM or #F9A825 */
-    --accent: 37 92% 56%;
-    --accent-foreground: 0 0% 13%;
+    /* Survols discrets (gris, jamais coloré) */
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
 
-    /* FSSM erreur #E53935 */
-    --destructive: 1 77% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 89%;
-    --input: 0 0% 89%;
-    --ring: 124 55% 24%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+
+    /* Bleu discret — focus, liens, accents ponctuels */
+    --brand: 221 83% 53%;
+    --ring: 221 83% 53%;
+
+    --success: 142 60% 40%;
+    --warning: 32 90% 45%;
 
     --radius: 0.5rem;
-
-    /* FSSM succès #43A047 */
-    --success: 123 41% 44%;
   }
 }
 
@@ -48,7 +49,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
       Helvetica, Arial, sans-serif;
   }

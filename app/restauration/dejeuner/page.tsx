@@ -9,7 +9,7 @@ export default function DejeunerPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Déjeuner — Jour {day}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Déjeuner — Jour {day}</h1>
         <p className="text-muted-foreground">
           Cochez chaque membre au moment de la distribution.
         </p>

@@ -73,7 +73,7 @@ export function ScanForm({ token }: { token: string | null }) {
   return (
     <form onSubmit={submit} className="space-y-5">
       {!token && (
-        <p className="rounded-md bg-accent/20 p-3 text-sm text-accent-foreground">
+        <p className="rounded-md border border-border bg-secondary p-3 text-sm text-muted-foreground">
           Aucun QR détecté. Scannez le QR code affiché à l&apos;accueil.
         </p>
       )}
@@ -116,52 +116,46 @@ function ResultScreen({
 }) {
   const config = {
     success: {
-      bg: "bg-[hsl(var(--success))]",
-      icon: <CheckCircle2 className="h-16 w-16" />,
+      tone: "text-success",
+      icon: <CheckCircle2 className="h-14 w-14" />,
       title:
         result.kind === "success"
-          ? `Bonjour ${result.prenom} !`
+          ? `Bonjour ${result.prenom}`
           : "Présence enregistrée",
-      text: "Présence enregistrée. Bonne journée !",
+      text: "Votre présence est enregistrée. Bonne journée.",
     },
     expired: {
-      bg: "bg-destructive",
-      icon: <XCircle className="h-16 w-16" />,
+      tone: "text-destructive",
+      icon: <XCircle className="h-14 w-14" />,
       title: "QR code expiré",
       text: "Scannez à nouveau le QR code affiché à l'accueil.",
     },
     unknown: {
-      bg: "bg-destructive",
-      icon: <XCircle className="h-16 w-16" />,
+      tone: "text-destructive",
+      icon: <XCircle className="h-14 w-14" />,
       title: "CNE non trouvé",
       text: "Vérifiez votre CNE ou contactez l'organisateur.",
     },
     already: {
-      bg: "bg-[#E65100]",
-      icon: <AlertTriangle className="h-16 w-16" />,
+      tone: "text-warning",
+      icon: <AlertTriangle className="h-14 w-14" />,
       title: "Déjà enregistré",
       text: "Vous êtes déjà enregistré aujourd'hui.",
     },
     error: {
-      bg: "bg-destructive",
-      icon: <XCircle className="h-16 w-16" />,
+      tone: "text-destructive",
+      icon: <XCircle className="h-14 w-14" />,
       title: "Erreur",
       text: result.kind === "error" ? result.message : "Une erreur est survenue.",
     },
   }[result.kind];
 
   return (
-    <div
-      className={`flex flex-col items-center gap-4 rounded-xl ${config.bg} p-8 text-center text-white`}
-    >
-      {config.icon}
-      <h2 className="text-2xl font-bold">{config.title}</h2>
-      <p className="text-white/90">{config.text}</p>
-      <Button
-        variant="secondary"
-        className="mt-2"
-        onClick={onRetry}
-      >
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-8 text-center">
+      <span className={config.tone}>{config.icon}</span>
+      <h2 className="text-xl font-semibold">{config.title}</h2>
+      <p className="text-sm text-muted-foreground">{config.text}</p>
+      <Button variant="outline" className="mt-3" onClick={onRetry}>
         {result.kind === "success" ? "Nouveau check-in" : "Réessayer"}
       </Button>
     </div>

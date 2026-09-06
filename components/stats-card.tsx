@@ -21,10 +21,10 @@ export function StatsCard({
         {Icon && (
           <div
             className={cn(
-              "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg",
+              "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border",
               accent
-                ? "bg-accent/20 text-accent-foreground"
-                : "bg-primary/10 text-primary",
+                ? "border-brand/20 bg-brand/10 text-brand"
+                : "bg-secondary text-foreground",
             )}
           >
             <Icon className="h-5 w-5" />
@@ -32,7 +32,7 @@ export function StatsCard({
         )}
         <div className="min-w-0">
           <p className="truncate text-sm text-muted-foreground">{label}</p>
-          <p className="text-2xl font-bold">{value}</p>
+          <p className="text-2xl font-semibold tracking-tight">{value}</p>
           {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
         </div>
       </CardContent>

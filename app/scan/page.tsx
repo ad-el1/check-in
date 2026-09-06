@@ -16,8 +16,8 @@ export default function ScanPage({
         <div className="flex justify-center">
           <FssmLogo />
         </div>
-        <div className="rounded-xl bg-card p-6 shadow-sm">
-          <h1 className="mb-1 text-xl font-bold text-primary">Check-in</h1>
+        <div className="rounded-xl border border-border bg-card p-6">
+          <h1 className="mb-1 text-lg font-semibold tracking-tight">Check-in</h1>
           <p className="mb-5 text-sm text-muted-foreground">
             Saisissez votre CNE pour enregistrer votre présence.
           </p>

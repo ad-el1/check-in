@@ -48,17 +48,9 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Tokens FSSM directement exploitables
-        fssm: {
-          primary: "#1B5E20",
-          "primary-light": "#2E7D32",
-          accent: "#F9A825",
-          surface: "#F5F5F5",
-          text: "#212121",
-          muted: "#757575",
-          success: "#43A047",
-          error: "#E53935",
-        },
+        brand: "hsl(var(--brand))",
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -40,8 +40,8 @@ import {
   Loader2,
 } from "lucide-react";
 
-const FSSM_GREEN = "#1B5E20";
-const FSSM_GOLD = "#F9A825";
+const C_INK = "#18181b"; // anthracite
+const C_BRAND = "#2563eb"; // bleu discret
 
 interface Stats {
   day: number;
@@ -133,7 +133,7 @@ export function DashboardClient() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">
             Statistiques temps réel — {stats?.totalActive ?? "…"} membres actifs
           </p>
@@ -205,7 +205,7 @@ export function DashboardClient() {
                   type="monotone"
                   dataKey="count"
                   name="Arrivées"
-                  stroke={FSSM_GREEN}
+                  stroke={C_INK}
                   strokeWidth={2}
                   dot={{ r: 3 }}
                 />
@@ -227,7 +227,7 @@ export function DashboardClient() {
                 <Bar
                   dataKey="presents"
                   name="Présents"
-                  fill={FSSM_GREEN}
+                  fill={C_INK}
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -249,13 +249,13 @@ export function DashboardClient() {
                 <Bar
                   dataKey="breakfasts"
                   name="Petit-déjeuner"
-                  fill={FSSM_GREEN}
+                  fill={C_INK}
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar
                   dataKey="lunches"
                   name="Déjeuner"
-                  fill={FSSM_GOLD}
+                  fill={C_BRAND}
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>

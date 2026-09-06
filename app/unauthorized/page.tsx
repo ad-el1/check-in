@@ -9,7 +9,7 @@ export default function UnauthorizedPage() {
       <FssmLogo />
       <ShieldX className="h-14 w-14 text-destructive" />
       <div>
-        <h1 className="text-2xl font-bold">Accès non autorisé</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Accès non autorisé</h1>
         <p className="mt-1 text-muted-foreground">
           Votre compte n&apos;a pas les droits pour cette page.
         </p>
