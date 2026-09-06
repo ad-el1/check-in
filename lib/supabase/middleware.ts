@@ -39,9 +39,13 @@ export async function updateSession(
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  return { response, user };
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return { response, user };
+  } catch (e) {
+    console.error("updateSession getUser error", e);
+    return { response, user: null };
+  }
 }

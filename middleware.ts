@@ -6,6 +6,17 @@ import type { Role } from "@/lib/types";
 const PUBLIC_PATHS = ["/login", "/scan", "/unauthorized"];
 
 export async function middleware(request: NextRequest) {
+  try {
+    return await guard(request);
+  } catch (e) {
+    // Un échec du middleware ne doit jamais renvoyer un 500 global :
+    // on laisse passer la requête (les layouts serveur re-vérifient le rôle).
+    console.error("middleware error", e);
+    return NextResponse.next({ request });
+  }
+}
+
+async function guard(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const { response, user } = await updateSession(request);
 
