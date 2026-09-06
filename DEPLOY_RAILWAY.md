@@ -30,10 +30,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_zZnRaQaQFyhyRFi7XnB54g_7_KAk517
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....
 NEXT_PUBLIC_EVENT_START_DATE=2026-09-07
 QR_ROTATION_SECONDS=5
-QR_GRACE_SECONDS=10
-QR_TTL_SECONDS=15
+QR_TTL_SECONDS=120
+QR_GRACE_SECONDS=30
 SCREEN_KEY=une-longue-chaine-aleatoire-secrete
 ```
+
+- `QR_TTL_SECONDS` + `QR_GRACE_SECONDS` = durée de validité d'un token
+  (ici 150 s). Doit laisser le temps de scanner **et** de taper le CNE.
+  Trop court → « QR code expiré » alors que le code vient d'être scanné.
 
 - `SCREEN_KEY` = **mot de passe de l'écran public `/ecran`**. Mets une chaîne
   longue et aléatoire. Sans elle, `/ecran` refuse d'afficher le QR (sécurité).

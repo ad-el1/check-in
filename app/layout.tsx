@@ -7,10 +7,7 @@ export const metadata: Metadata = {
   description:
     "Check-in du comité d'organisation — Rentrée FSSM 2026-2027, Université Cadi Ayyad.",
   manifest: "/manifest.json",
-  icons: {
-    icon: "/icons/icon-192.png",
-    apple: "/icons/apple-icon.png",
-  },
+  // Favicon : app/icon.svg + app/apple-icon.png (détectés automatiquement).
 };
 
 export const viewport: Viewport = {
