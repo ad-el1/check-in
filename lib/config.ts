@@ -4,6 +4,13 @@ export const QR_ROTATION_SECONDS = Number(process.env.QR_ROTATION_SECONDS ?? 5);
 export const QR_GRACE_SECONDS = Number(process.env.QR_GRACE_SECONDS ?? 10);
 export const QR_TTL_SECONDS = Number(process.env.QR_TTL_SECONDS ?? 15);
 
+/**
+ * Clé secrète de l'écran QR public.
+ * `/ecran?key=<SCREEN_KEY>` et `/api/qr?key=<SCREEN_KEY>`.
+ * Sans elle, seule une session admin/checkin peut générer un QR.
+ */
+export const SCREEN_KEY = process.env.SCREEN_KEY ?? "";
+
 export const EVENT_START_DATE =
   process.env.NEXT_PUBLIC_EVENT_START_DATE ?? "2026-09-08";
 

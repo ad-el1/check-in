@@ -23,7 +23,13 @@ function resolveOrigin(): string {
 }
 
 /** Écran QR épuré : uniquement le QR code + un fin indicateur de rotation. */
-export function QrDisplay() {
+export function QrDisplay({
+  screenKey,
+  onUnauthorized,
+}: {
+  screenKey?: string;
+  onUnauthorized?: () => void;
+}) {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [progress, setProgress] = useState(100);
@@ -36,7 +42,14 @@ export function QrDisplay() {
 
   const fetchToken = useCallback(async () => {
     try {
-      const res = await fetch("/api/qr", { cache: "no-store" });
+      const url = screenKey
+        ? `/api/qr?key=${encodeURIComponent(screenKey)}`
+        : "/api/qr";
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.status === 401) {
+        onUnauthorized?.();
+        return;
+      }
       if (!res.ok) throw new Error("qr");
       const data = (await res.json()) as { token: string };
       setToken(data.token);
@@ -46,7 +59,7 @@ export function QrDisplay() {
     } catch {
       setError(true);
     }
-  }, []);
+  }, [screenKey, onUnauthorized]);
 
   useEffect(() => {
     fetchToken();

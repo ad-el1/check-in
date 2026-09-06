@@ -1,11 +1,16 @@
-import { QrDisplay } from "@/components/qr-display";
+import { EcranScreen } from "@/components/ecran-screen";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Écran QR PUBLIC (kiosque d'accueil) — aucune connexion requise.
- * À ouvrir en plein écran sur la tablette/laptop d'accueil.
+ * Écran QR public (kiosque d'accueil), protégé par mot de passe (SCREEN_KEY).
+ * `?key=<mot de passe>` pré-remplit ; sinon le navigateur le mémorise après
+ * la première saisie.
  */
-export default function EcranPublicPage() {
-  return <QrDisplay />;
+export default function EcranPublicPage({
+  searchParams,
+}: {
+  searchParams: { key?: string };
+}) {
+  return <EcranScreen initialKey={searchParams.key} />;
 }

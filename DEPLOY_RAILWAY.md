@@ -32,7 +32,11 @@ NEXT_PUBLIC_EVENT_START_DATE=2026-09-07
 QR_ROTATION_SECONDS=5
 QR_GRACE_SECONDS=10
 QR_TTL_SECONDS=15
+SCREEN_KEY=une-longue-chaine-aleatoire-secrete
 ```
+
+- `SCREEN_KEY` = **mot de passe de l'écran public `/ecran`**. Mets une chaîne
+  longue et aléatoire. Sans elle, `/ecran` refuse d'afficher le QR (sécurité).
 
 - **Ne pas** définir `PORT` : Railway l'injecte automatiquement.
 - `NEXT_PUBLIC_APP_URL` : on l'ajoute à l'étape 4 (il faut d'abord le domaine).

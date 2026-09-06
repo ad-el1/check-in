@@ -45,6 +45,7 @@ Copier `.env.local.example` → `.env.local` et remplir :
 | `QR_ROTATION_SECONDS` | rafraîchissement du QR (défaut 5) |
 | `QR_GRACE_SECONDS` | fenêtre de grâce après expiration (défaut 10) |
 | `QR_TTL_SECONDS` | durée de vie d'un token (défaut 15) |
+| `SCREEN_KEY` | mot de passe de l'écran QR public `/ecran` — obligatoire pour l'utiliser |
 
 ### 4. Lancer
 
@@ -59,7 +60,14 @@ npm run dev      # http://localhost:3000
 | `admin` | tout (`/admin/*`, `/checkin/*`, `/restauration/*`) |
 | `checkin` | `/checkin/qr-screen`, `/checkin/presences` |
 | `restauration` | `/restauration/petit-dejeuner`, `/restauration/dejeuner` |
-| public | `/scan` (membres, sans connexion) |
+| public | `/scan` (membres, sans connexion) ; `/ecran` (écran QR, protégé par `SCREEN_KEY`) |
+
+### Écran QR — deux façons
+- **`/checkin/qr-screen`** : via une session `admin`/`checkin` (bouton « Écran QR » du menu).
+- **`/ecran`** : borne d'accueil sans compte. Demande le mot de passe `SCREEN_KEY`
+  une fois, puis le navigateur le retient. Bouton « Déconnecter l'écran » pour l'oublier.
+  Sans ce mot de passe, `/api/qr` renvoie 401 → **pas de check-in à distance**
+  possible avec le seul lien du site.
 
 Le calcul du **jour courant** (J1→J7) se fait à partir de
 `NEXT_PUBLIC_EVENT_START_DATE`. Le dashboard admin permet de naviguer

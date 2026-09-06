@@ -1,22 +1,43 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "node:crypto";
+import { randomUUID, timingSafeEqual } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { QR_TTL_SECONDS } from "@/lib/config";
+import { requireRole } from "@/lib/auth";
+import { QR_TTL_SECONDS, SCREEN_KEY } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
+function keyMatches(provided: string | null): boolean {
+  if (!SCREEN_KEY || !provided) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(SCREEN_KEY);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 /**
- * GET /api/qr
- * Génère un token, le stocke (expires_at = now + TTL), purge les expirés.
+ * GET /api/qr — génère un token QR.
+ * Autorisé si : session admin/checkin  OU  ?key=<SCREEN_KEY> valide.
+ * Sinon 401 (empêche de récupérer un QR à distance sans le mot de passe écran).
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const viaKey = keyMatches(searchParams.get("key"));
+    const viaSession = viaKey
+      ? null
+      : await requireRole(["admin", "checkin"]);
+
+    if (!viaKey && !viaSession) {
+      return NextResponse.json(
+        { error: "Mot de passe de l'écran requis." },
+        { status: 401, headers: { "Cache-Control": "no-store" } },
+      );
+    }
+
     const supabase = createAdminClient();
     const now = Date.now();
     const token = randomUUID();
     const expiresAt = new Date(now + QR_TTL_SECONDS * 1000).toISOString();
 
-    // Purge des tokens expirés (best effort)
     await supabase
       .from("qr_tokens")
       .delete()
