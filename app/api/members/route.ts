@@ -57,6 +57,9 @@ export async function POST(request: Request) {
   const errors: string[] = [];
 
   const rows = rawRows as Record<string, unknown>[];
+  const seen = new Map<string, { cne: string; nom: string; prenom: string }>();
+  let duplicates = 0;
+
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const cne = normalizeCne(String(r.cne ?? ""));
@@ -66,29 +69,57 @@ export async function POST(request: Request) {
       errors.push(`Ligne ${i + 1} ignorée (CNE/nom/prénom invalide).`);
       continue;
     }
-    cleaned.push({ cne, nom, prenom });
+    if (seen.has(cne)) duplicates++;
+    seen.set(cne, { cne, nom, prenom }); // dernier gagne
+  }
+  cleaned.push(...seen.values());
+  if (duplicates > 0) {
+    errors.push(`${duplicates} doublon(s) de CNE dans le fichier (dernière occurrence conservée).`);
   }
 
   if (cleaned.length === 0) {
     return NextResponse.json(
-      { error: "Aucune ligne valide.", details: errors },
+      {
+        error:
+          "Aucune ligne valide. Colonnes attendues : cne, nom, prenom (séparateur , ou ;).",
+        details: errors,
+      },
       { status: 400 },
     );
   }
 
-  const { data, error } = await supabase
-    .from("members")
-    .upsert(cleaned, { onConflict: "cne", ignoreDuplicates: false })
-    .select();
+  // Upsert par lots ; en cas d'échec du lot, on retombe sur du ligne par ligne
+  // pour ne pas tout perdre à cause d'une seule ligne fautive.
+  let inserted = 0;
+  const CHUNK = 200;
+  for (let i = 0; i < cleaned.length; i += CHUNK) {
+    const batch = cleaned.slice(i, i + CHUNK);
+    const { data, error } = await supabase
+      .from("members")
+      .upsert(batch, { onConflict: "cne", ignoreDuplicates: false })
+      .select("id");
 
-  if (error) {
-    console.error("members upsert error", error);
-    return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
+    if (!error) {
+      inserted += data?.length ?? batch.length;
+      continue;
+    }
+
+    console.error("members upsert batch error", error);
+    for (const row of batch) {
+      const { error: rowErr } = await supabase
+        .from("members")
+        .upsert(row, { onConflict: "cne", ignoreDuplicates: false });
+      if (rowErr) {
+        errors.push(`${row.cne} : ${rowErr.message}`);
+      } else {
+        inserted++;
+      }
+    }
   }
 
   return NextResponse.json({
     success: true,
-    inserted: data?.length ?? 0,
+    inserted,
     skipped: errors,
   });
 }

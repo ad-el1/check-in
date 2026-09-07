@@ -158,12 +158,21 @@ export function MembresClient() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ rows }),
         });
-        const d = await res.json();
+        const d = await res.json().catch(() => ({}));
         if (!res.ok) {
-          toast.error(d.error ?? "Import échoué");
+          toast.error(d.error ?? "Import échoué", {
+            description: Array.isArray(d.details)
+              ? d.details.slice(0, 3).join(" · ")
+              : undefined,
+          });
           return;
         }
-        toast.success(`${d.inserted} membre(s) importé(s)`);
+        toast.success(`${d.inserted} membre(s) importé(s)`, {
+          description:
+            Array.isArray(d.skipped) && d.skipped.length
+              ? d.skipped.slice(0, 3).join(" · ")
+              : undefined,
+        });
         load();
       },
       error: () => toast.error("Lecture du fichier impossible"),
