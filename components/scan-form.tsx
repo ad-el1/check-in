@@ -79,17 +79,21 @@ export function ScanForm({ token }: { token: string | null }) {
       )}
       <div className="space-y-2">
         <Label htmlFor="cne" className="text-base">
-          Votre CNE
+          Votre CNE <span className="font-normal text-muted-foreground">(lettre + chiffres)</span>
         </Label>
         <Input
           id="cne"
-          inputMode="numeric"
+          type="text"
+          inputMode="text"
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="characters"
+          spellCheck={false}
           autoFocus
           placeholder="Ex : R123456789"
           value={cne}
-          onChange={(e) => setCne(e.target.value)}
-          className="h-14 text-center text-xl tracking-widest"
+          onChange={(e) => setCne(e.target.value.toUpperCase())}
+          className="h-14 text-center text-xl uppercase tracking-widest"
         />
         {formError && (
           <p className="text-sm font-medium text-destructive">{formError}</p>
