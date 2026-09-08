@@ -5,6 +5,12 @@ const num = (v: string | undefined, def: number) => {
   return Number.isFinite(n) && n > 0 ? n : def;
 };
 
+/** Nombre autorisant 0 et les négatifs (pour un décalage horaire). */
+const signed = (v: string | undefined, def: number) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : def;
+};
+
 /** Rotation VISUELLE du QR à l'écran (secondes). */
 export const QR_ROTATION_SECONDS = num(process.env.QR_ROTATION_SECONDS, 5);
 /**
@@ -25,8 +31,18 @@ export const QR_GRACE_SECONDS = Math.max(
  */
 export const SCREEN_KEY = process.env.SCREEN_KEY ?? "";
 
-export const EVENT_START_DATE =
-  process.env.NEXT_PUBLIC_EVENT_START_DATE ?? "2026-09-08";
+/** Date de J1, format YYYY-MM-DD (tolère espaces / suffixes parasites). */
+export const EVENT_START_DATE = (
+  process.env.NEXT_PUBLIC_EVENT_START_DATE ?? "2026-09-07"
+)
+  .trim()
+  .slice(0, 10);
+
+/** Décalage horaire du lieu de l'événement vs UTC (Maroc = +1). */
+export const EVENT_TZ_OFFSET_HOURS = signed(
+  process.env.EVENT_TZ_OFFSET_HOURS,
+  1,
+);
 
 export const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";

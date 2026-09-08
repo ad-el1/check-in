@@ -1,19 +1,26 @@
-import { EVENT_START_DATE } from "./config";
+import { EVENT_START_DATE, EVENT_TZ_OFFSET_HOURS } from "./config";
 
-/** Minuit local pour une date donnée. */
-function atMidnight(d: Date): number {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+/** Minuit UTC de la date calendaire "sur le lieu de l'événement" pour l'instant d. */
+function eventMidnightUTC(d: Date): number {
+  const shifted = new Date(d.getTime() + EVENT_TZ_OFFSET_HOURS * 3_600_000);
+  return Date.UTC(
+    shifted.getUTCFullYear(),
+    shifted.getUTCMonth(),
+    shifted.getUTCDate(),
+  );
 }
 
 /**
- * Jour de l'événement (1..7) pour la date passée (par défaut aujourd'hui),
- * calculé depuis EVENT_START_DATE. Avant le début -> 1, après -> 7.
+ * Jour de l'événement (1..7) pour l'instant passé (par défaut maintenant),
+ * calculé depuis EVENT_START_DATE dans le fuseau du lieu (Maroc = UTC+1).
+ * Format de date invalide -> 1. Avant le début -> 1, après -> 7.
  */
 export function getEventDay(now: Date = new Date()): number {
-  const start = new Date(`${EVENT_START_DATE}T00:00:00`);
-  if (Number.isNaN(start.getTime())) return 1;
-  const diffDays = Math.floor(
-    (atMidnight(now) - atMidnight(start)) / 86_400_000,
+  const m = EVENT_START_DATE.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return 1;
+  const startUTC = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const diffDays = Math.round(
+    (eventMidnightUTC(now) - startUTC) / 86_400_000,
   );
   return Math.min(7, Math.max(1, diffDays + 1));
 }
